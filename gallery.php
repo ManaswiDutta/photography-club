@@ -18,6 +18,11 @@
                     <li><a href="admin/login.php">Admin</a></li>
                 </ul>
             </nav>
+            <div class="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
         </div>
     </header>
 

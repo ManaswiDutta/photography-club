@@ -78,4 +78,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { threshold: 0.5 });
 
     document.querySelectorAll('.stat-number').forEach(stat => statsObserver.observe(stat));
+
+    // Mobile Nav Toggle
+    const navToggle = document.querySelector('.nav-toggle');
+    const navMenu = document.querySelector('nav');
+
+    if (navToggle && navMenu) {
+        navToggle.addEventListener('click', () => {
+            navToggle.classList.toggle('active');
+            navMenu.classList.toggle('active');
+            document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
+        });
+
+        // Close menu on link click
+        navMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                navToggle.classList.remove('active');
+                navMenu.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        });
+    }
 });

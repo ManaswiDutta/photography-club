@@ -150,6 +150,34 @@ header {
     background: rgba(0, 0, 0, 0.3);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--glass-border);
+    transition: var(--transition);
+}
+
+.nav-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+.nav-toggle span {
+    width: 30px;
+    height: 2px;
+    background: var(--text-main);
+    transition: var(--transition);
+}
+
+.nav-toggle.active span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 6px);
+}
+
+.nav-toggle.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.nav-toggle.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(5px, -6px);
 }
 
 .container {
@@ -493,19 +521,104 @@ section {
     }
 
     .event-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem;
     }
 
     .stats-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
         gap: 2rem;
     }
 
     .hero h1 {
-        font-size: 4rem;
+        font-size: clamp(3.5rem, 12vw, 8rem);
     }
 
     .section-title {
-        font-size: 3rem;
+        font-size: 3.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    :root {
+        --nav-height: 60px;
+    }
+
+    .nav-toggle {
+        display: flex;
+    }
+
+    nav {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 100%;
+        height: 100vh;
+        background: var(--bg-dark);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        z-index: 1000;
+    }
+
+    nav.active {
+        right: 0;
+    }
+
+    nav ul {
+        flex-direction: column;
+        align-items: center;
+        gap: 3rem;
+    }
+
+    nav ul a {
+        font-size: 1.5rem;
+    }
+
+    .hero {
+        text-align: center;
+        padding-top: 5rem;
+    }
+
+    .hero .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .hero-slide {
+        text-align: center;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .section-title {
+        font-size: 2.8rem;
+    }
+
+    .horiz-scroll {
+        gap: 1rem;
+    }
+
+    .custom-cursor,
+    .cursor-follower {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero h1 {
+        font-size: 2.8rem;
+    }
+
+    .section-title {
+        font-size: 2.2rem;
+    }
+
+    .section {
+        padding: 6rem 0;
     }
 }
