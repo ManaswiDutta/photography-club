@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gallery | Photo Club</title>
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/style.css?v=2.1">
 </head>
 <body>
     <header>
@@ -34,10 +34,40 @@
                     <label style="display: block; margin-bottom: 0.8rem; font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em;">Search Events</label>
                     <input type="text" name="search" placeholder="Event name..." value="<?php echo htmlspecialchars($_GET['search'] ?? ''); ?>">
                 </div>
-                <div style="flex: 1; min-width: 150px;">
-                    <label style="display: block; margin-bottom: 0.8rem; font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em;">Date Filter</label>
-                    <input type="month" name="date" value="<?php echo htmlspecialchars($_GET['date'] ?? ''); ?>">
+                
+                <?php
+                // Fetch dynamic years and their specific months from DB
+                $year_month_data = [];
+                $stmt = $pdo->query("SELECT DISTINCT YEAR(event_date) as yr, MONTH(event_date) as mo FROM events ORDER BY yr DESC, mo ASC");
+                while ($row = $stmt->fetch()) {
+                    $year_month_data[$row['yr']][] = [
+                        'val' => $row['mo'],
+                        'name' => date('F', mktime(0, 0, 0, $row['mo'], 1))
+                    ];
+                }
+                
+                $sel_year = $_GET['year'] ?? '';
+                $sel_month = $_GET['month'] ?? '';
+                ?>
+
+                <div style="flex: 1; min-width: 120px;">
+                    <label style="display: block; margin-bottom: 0.8rem; font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em;">Year</label>
+                    <select name="year" id="year-select" onchange="updateMonths()">
+                        <option value="">All Years</option>
+                        <?php foreach (array_keys($year_month_data) as $y): ?>
+                            <option value="<?php echo $y; ?>" <?php echo ($sel_year == $y) ? 'selected' : ''; ?>><?php echo $y; ?></option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
+
+                <div id="month-container" style="flex: 1; min-width: 120px; display: <?php echo $sel_year ? 'block' : 'none'; ?>;">
+                    <label style="display: block; margin-bottom: 0.8rem; font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em;">Month</label>
+                    <select name="month" id="month-select">
+                        <option value="">All Months</option>
+                        <!-- Populated via JS -->
+                    </select>
+                </div>
+
                 <div style="display: flex; gap: 0.8rem;">
                     <button type="submit" class="btn btn-primary" style="padding: 0.9rem 1.5rem;">Filter</button>
                     <a href="gallery.php" class="btn btn-outline" style="padding: 0.9rem 1.5rem;">Reset</a>
@@ -45,10 +75,45 @@
             </form>
         </div>
 
+        <script>
+            const yearMonthData = <?php echo json_encode($year_month_data); ?>;
+            const initialMonth = "<?php echo $sel_month; ?>";
+
+            function updateMonths() {
+                const yearSelect = document.getElementById('year-select');
+                const monthContainer = document.getElementById('month-container');
+                const monthSelect = document.getElementById('month-select');
+                const selectedYear = yearSelect.value;
+
+                if (!selectedYear) {
+                    monthContainer.style.display = 'none';
+                    monthSelect.value = "";
+                    return;
+                }
+
+                monthContainer.style.display = 'block';
+                monthSelect.innerHTML = '<option value="">All Months</option>';
+
+                if (yearMonthData[selectedYear]) {
+                    yearMonthData[selectedYear].forEach(m => {
+                        const opt = document.createElement('option');
+                        opt.value = m.val;
+                        opt.textContent = m.name;
+                        if (m.val == initialMonth) opt.selected = true;
+                        monthSelect.appendChild(opt);
+                    });
+                }
+            }
+
+            // Initialize on load
+            window.onload = updateMonths;
+        </script>
+
         <div class="event-grid" style="margin-bottom: 10rem;">
             <?php
             $search = $_GET['search'] ?? '';
-            $date = $_GET['date'] ?? '';
+            $year = $_GET['year'] ?? '';
+            $month = $_GET['month'] ?? '';
             
             $sql = "SELECT * FROM events WHERE 1=1";
             $params = [];
@@ -57,9 +122,13 @@
                 $sql .= " AND name LIKE ?";
                 $params[] = "%$search%";
             }
-            if ($date) {
-                $sql .= " AND DATE_FORMAT(event_date, '%Y-%m') = ?";
-                $params[] = $date;
+            if ($year) {
+                $sql .= " AND YEAR(event_date) = ?";
+                $params[] = $year;
+            }
+            if ($month) {
+                $sql .= " AND MONTH(event_date) = ?";
+                $params[] = $month;
             }
             
             $sql .= " ORDER BY event_date DESC";

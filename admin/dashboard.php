@@ -13,7 +13,7 @@ $events = $stmt->fetchAll();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard | Photo Club</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css?v=2.1">
 </head>
 <body>
     <header class="glass">
@@ -76,6 +76,7 @@ $events = $stmt->fetchAll();
                                 <td style="padding: 1.5rem; font-weight: 500;"><?php echo date('M Y', strtotime($event['event_date'])); ?></td>
                                 <td style="padding: 1.5rem;"><span style="background: var(--glass-bright); padding: 0.3rem 0.8rem; border-radius: 100px; font-size: 0.8rem;"><?php echo $event['photo_count']; ?> Photos</span></td>
                                 <td style="padding: 1.5rem; text-align: right;">
+                                    <a href="edit_event.php?id=<?php echo $event['id']; ?>" class="btn btn-outline" style="padding: 0.5rem 1.2rem; font-size: 0.8rem; margin-right: 0.5rem;">Edit</a>
                                     <a href="delete_event.php?id=<?php echo $event['id']; ?>" onclick="return confirm('Archive this event?')" class="btn btn-outline" style="padding: 0.5rem 1.2rem; font-size: 0.8rem; color: var(--primary); border-color: rgba(255, 71, 87, 0.2);">Delete</a>
                                 </td>
                             </tr>

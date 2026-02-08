@@ -1,0 +1,2 @@
+# Put one Google Photos shared album link per line
+# Example: https://photos.app.goo.gl/xxx

@@ -1,19 +1,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;700;900&display=swap');
 
 :root {
-    --primary: #ff4757;
-    --primary-dim: rgba(255, 71, 87, 0.2);
-    --secondary: #2196f3;
-    /* New accent for depth */
+    --primary: #f26522;
+    /* Sacred Saffron / Gerua */
+    --primary-dim: rgba(242, 101, 34, 0.12);
+    --secondary: #ffb142;
+    /* Sandalwood / Chandan */
     --accent: #2f3542;
-    --bg-dark: #020202;
-    /* Even deeper black */
-    --bg-card: #080808;
-    --text-main: #ffffff;
-    --text-muted: #888888;
-    --glass: rgba(255, 255, 255, 0.02);
-    --glass-border: rgba(255, 255, 255, 0.06);
-    --transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    --bg-dark: #050403;
+    /* Deep Earthy Black */
+    --bg-card: #0c0a09;
+    --text-main: #f8f1e9;
+    /* Off-white / Cream */
+    --text-muted: #8d8076;
+    --glass: rgba(255, 255, 255, 0.015);
+    --glass-border: rgba(242, 101, 34, 0.1);
+    --transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
     --nav-height: 90px;
 }
 
@@ -30,6 +32,38 @@ body {
     line-height: 1.5;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
+}
+
+/* Global Input & Form Styles */
+input[type="text"],
+input[type="password"],
+input[type="date"],
+input[type="email"],
+select,
+textarea {
+    width: 100%;
+    padding: 1rem 1.2rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    color: var(--text-main);
+    font-family: inherit;
+    font-size: 0.95rem;
+    transition: var(--transition);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: rgba(255, 255, 255, 0.07);
+    box-shadow: 0 0 0 4px var(--primary-dim);
+}
+
+::placeholder {
+    color: var(--text-muted);
+    opacity: 0.5;
 }
 
 h1,
@@ -100,34 +134,24 @@ header {
     align-items: center;
     position: fixed;
     top: 0;
-    left: 0;
     width: 100%;
     z-index: 1000;
-    background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--glass-border);
-}
-
-header .container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
 }
 
 .container {
     max-width: 1400px;
     margin: 0 auto;
     padding: 0 5rem;
+    position: relative;
+    z-index: 10;
 }
 
 .logo {
     font-size: 1.6rem;
     text-transform: uppercase;
-    white-space: nowrap;
-    font-weight: 900;
-    color: var(--text-main);
 }
 
 .logo span {
@@ -137,8 +161,7 @@ header .container {
 nav ul {
     display: flex;
     list-style: none;
-    gap: 3rem;
-    align-items: center;
+    gap: 4rem;
 }
 
 nav ul a {
@@ -147,30 +170,30 @@ nav ul a {
     text-transform: uppercase;
     letter-spacing: 0.1em;
     color: var(--text-muted);
-    transition: var(--transition);
+    text-decoration: none;
 }
 
-nav ul a:hover,
-nav ul a.active {
+nav ul a.active,
+nav ul a:hover {
     color: var(--primary);
 }
 
 /* Hero */
 .hero {
-    min-height: 100vh;
+    height: 100vh;
     display: flex;
     align-items: center;
     position: relative;
-    z-index: 10;
-    padding-top: var(--nav-height);
+    z-index: 1;
 }
 
 .hero h1 {
-    font-size: clamp(3.5rem, 12vw, 10rem);
-    line-height: 1;
+    font-size: clamp(4rem, 15vw, 12rem);
+    line-height: 0.85;
     margin-bottom: 2rem;
     text-transform: uppercase;
-    font-weight: 900;
+    mix-blend-mode: overlay;
+    /* Very high-end effect */
 }
 
 .hero .hero-accent {
@@ -271,6 +294,7 @@ section {
     border-radius: 30px;
     overflow: hidden;
     aspect-ratio: 4/5;
+    background: var(--bg-card);
 }
 
 .event-img {
@@ -312,6 +336,40 @@ section {
     transform: translateY(0);
 }
 
+/* Glass Card & Box Styles */
+.glass {
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    transition: var(--transition);
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    border: 1px solid var(--glass-border);
+    border-radius: 32px;
+    transition: var(--transition);
+}
+
+.animate-up {
+    animation: animateUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes animateUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* Buttons */
 .btn {
     padding: 1.2rem 3rem;
@@ -325,6 +383,7 @@ section {
     display: inline-flex;
     align-items: center;
     gap: 1rem;
+    text-decoration: none;
 }
 
 .btn-primary {
