@@ -8,23 +8,7 @@
     <link rel="stylesheet" href="assets/css/style.css?v=2.1">
 </head>
 <body>
-    <header>
-        <div class="container">
-            <a href="index.php" class="logo"><span>PHOTOGRAPHY </span>CLUB</a>
-            <nav>
-                <ul>
-                    <li><a href="index.php" class="active">Home</a></li>
-                    <li><a href="gallery.php">Gallery</a></li>
-                    <li><a href="admin/login.php">Admin</a></li>
-                </ul>
-            </nav>
-            <div class="nav-toggle">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-        </div>
-    </header>
+    <?php include 'includes/header.php'; ?>
 
     <?php
     // Fetch Dynamic Backgrounds - Safety wrap in case table isn't created yet
@@ -136,38 +120,7 @@
         </section>
     </main>
 
-    <footer>
-        <div class="container footer-content">
-            <div class="logo"><span>PHOTOGRAPHy </span>CLUB</div>
-            
-            <?php
-            // Fetch Social Links
-            $social_stmt = $pdo->query("SELECT * FROM social_links");
-            $social_links = $social_stmt->fetchAll();
-            
-            if (!empty($social_links)): ?>
-                <div class="social-links">
-                    <?php foreach ($social_links as $link): 
-                        $icon = "fa-link";
-                        switch(strtolower($link['platform'])) {
-                            case 'instagram': $icon = "fa-brands fa-instagram"; break;
-                            case 'facebook': $icon = "fa-brands fa-facebook"; break;
-                            case 'twitter': $icon = "fa-brands fa-twitter"; break;
-                            case 'linkedin': $icon = "fa-brands fa-linkedin"; break;
-                            case 'youtube': $icon = "fa-brands fa-youtube"; break;
-                            case 'github': $icon = "fa-brands fa-github"; break;
-                        }
-                    ?>
-                        <a href="<?php echo htmlspecialchars($link['url']); ?>" target="_blank" class="social-icon" title="<?php echo htmlspecialchars($link['platform']); ?>">
-                            <i class="<?php echo $icon; ?>"></i>
-                        </a>
-                    <?php endforeach; ?>
-                </div>
-            <?php endif; ?>
-            
-            <p class="copyright">&copy;2026 Vidyamandira Photography Club</p>
-        </div>
-    </footer>
+<?php include 'includes/footer.php'; ?>
 
     <script src="assets/js/main.js"></script>
 </body>

@@ -102,25 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <link rel="stylesheet" href="../assets/css/style.css?v=2.1">
 </head>
 <body>
-    <header class="glass">
-        <div class="container header-flex">
-            <a href="../index.php" class="logo">ADMIN<span>PANEL</span></a>
-            <nav>
-                <ul>
-                    <li><a href="dashboard.php">Dashboard</a></li>
-                    <li><a href="upload_event.php" class="active">Upload</a></li>
-                    <li><a href="background_settings.php">BG Settings</a></li>
-                    <li><a href="social_settings.php">Social</a></li>
-                    <li><a href="logout.php">Logout</a></li>
-                </ul>
-            </nav>
-            <div class="nav-toggle">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-        </div>
-    </header>
+<?php include 'header.php'; ?>
 
     <main class="container animate-up" style="padding-top: 10rem;">
         <div class="glass-card upload-card" style="margin: 0 auto;">
@@ -233,6 +215,4 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             xhr.send(formData);
         };
     </script>
-    <script src="../assets/js/main.js"></script>
-</body>
-</html>
+<?php include 'footer.php'; ?>
