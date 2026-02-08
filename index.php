@@ -9,8 +9,8 @@
 </head>
 <body>
     <header>
-        <div class="container" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-            <a href="index.php" class="logo">PH<span>.CLUB</span></a>
+        <div class="container">
+            <a href="index.php" class="logo"><span>PHOTOGRAPHY </span>CLUB</a>
             <nav>
                 <ul>
                     <li><a href="index.php" class="active">Home</a></li>
@@ -21,10 +21,29 @@
         </div>
     </header>
 
+    <?php
+    // Fetch Dynamic Backgrounds - Safety wrap in case table isn't created yet
+    $dynamic_bgs = [];
+    try {
+        $bg_stmt = $pdo->query("SELECT p.file_path FROM backgrounds b JOIN photos p ON b.photo_id = p.id ORDER BY b.added_at DESC");
+        if ($bg_stmt) {
+            $dynamic_bgs = $bg_stmt->fetchAll();
+        }
+    } catch (PDOException $e) {
+        // Table doesn't exist or other error, fallback to defaults
+        $dynamic_bgs = [];
+    }
+    ?>
     <div class="bg-scroller">
-        <div class="bg-slide active" style="background-image: url('https://images.unsplash.com/photo-1493238792040-d710d73aa2a3?auto=format&fit=crop&q=80&w=1920')"></div>
-        <div class="bg-slide" style="background-image: url('https://images.unsplash.com/photo-1452587925148-ce544e77e70d?auto=format&fit=crop&q=80&w=1920')"></div>
-        <div class="bg-slide" style="background-image: url('https://images.unsplash.com/photo-1542038784456-1ea8e935640e?auto=format&fit=crop&q=80&w=1920')"></div>
+        <?php if (!empty($dynamic_bgs)): ?>
+            <?php foreach ($dynamic_bgs as $index => $bg): ?>
+                <div class="bg-slide <?php echo $index === 0 ? 'active' : ''; ?>" style="background-image: url('<?php echo htmlspecialchars($bg['file_path']); ?>')"></div>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <div class="bg-slide active" style="background-image: url('https://images.unsplash.com/photo-1493238792040-d710d73aa2a3?auto=format&fit=crop&q=80&w=1920')"></div>
+            <div class="bg-slide" style="background-image: url('https://images.unsplash.com/photo-1452587925148-ce544e77e70d?auto=format&fit=crop&q=80&w=1920')"></div>
+            <div class="bg-slide" style="background-image: url('https://images.unsplash.com/photo-1542038784456-1ea8e935640e?auto=format&fit=crop&q=80&w=1920')"></div>
+        <?php endif; ?>
     </div>
     <div class="bg-overlay"></div>
     <div class="bg-grain"></div>

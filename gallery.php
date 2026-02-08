@@ -21,7 +21,7 @@
         </div>
     </header>
 
-    <main class="container animate-up" style="min-height: 80vh; padding-top: 10rem;">
+    <main class="container animate-up" style="min-height: 80vh; padding-top: 8rem;">
         <div style="text-align: center; margin-bottom: 6rem;">
             <h1 style="font-size: 4.5rem; margin-bottom: 1rem;">The Compendium</h1>
             <p style="color: var(--text-muted); font-size: 1.2rem; font-weight: 300;">Browsing through our visual history.</p>

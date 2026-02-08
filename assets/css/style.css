@@ -2,21 +2,20 @@
 
 :root {
     --primary: #f26522;
-    /* Sacred Saffron / Gerua */
+    /* Sacred Saffron */
+    --primary-light: #ff7e42;
+    /* Lighter Saffron */
     --primary-dim: rgba(242, 101, 34, 0.12);
-    --secondary: #ffb142;
-    /* Sandalwood / Chandan */
-    --accent: #2f3542;
     --bg-dark: #050403;
     /* Deep Earthy Black */
     --bg-card: #0c0a09;
     --text-main: #f8f1e9;
-    /* Off-white / Cream */
+    /* Cream White */
     --text-muted: #8d8076;
-    --glass: rgba(255, 255, 255, 0.015);
-    --glass-border: rgba(242, 101, 34, 0.1);
-    --transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-    --nav-height: 90px;
+    --glass: rgba(255, 255, 255, 0.01);
+    --glass-border: rgba(242, 101, 34, 0.15);
+    --transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    --nav-height: 65px;
 }
 
 * {
@@ -61,6 +60,12 @@ textarea:focus {
     box-shadow: 0 0 0 4px var(--primary-dim);
 }
 
+/* Fix for white-on-white dropdowns in dark mode */
+select option {
+    background-color: var(--bg-card);
+    color: var(--text-main);
+}
+
 ::placeholder {
     color: var(--text-muted);
     opacity: 0.5;
@@ -76,6 +81,13 @@ h3,
 }
 
 /* Background & Overlays */
+.bg-scroller,
+.bg-overlay,
+.bg-grain {
+    pointer-events: none;
+    user-select: none;
+}
+
 .bg-scroller {
     position: fixed;
     top: 0;
@@ -123,7 +135,6 @@ h3,
     height: 100%;
     background-image: url('https://grainy-gradients.vercel.app/noise.svg');
     opacity: 0.08;
-    pointer-events: none;
     z-index: -1;
 }
 
@@ -147,6 +158,13 @@ header {
     padding: 0 5rem;
     position: relative;
     z-index: 10;
+}
+
+header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
 }
 
 .logo {
@@ -185,6 +203,7 @@ nav ul a:hover {
     align-items: center;
     position: relative;
     z-index: 1;
+    padding-top: var(--nav-height);
 }
 
 .hero h1 {
@@ -263,7 +282,7 @@ section {
 }
 
 .stat-item {
-    border-left: 1px solid var(--primary);
+    border-left: 2px solid var(--primary);
     padding-left: 2rem;
 }
 
@@ -434,6 +453,38 @@ section {
     box-shadow: 0 15px 40px rgba(46, 204, 113, 0.4);
     font-weight: 700;
     animation: fadeInDown 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    pointer-events: none;
+}
+
+/* Custom Cursor Styles */
+.custom-cursor,
+.cursor-follower {
+    position: fixed;
+    pointer-events: none;
+    z-index: 10001;
+    border-radius: 50%;
+    transition: transform 0.2s ease;
+    mix-blend-mode: difference;
+}
+
+.custom-cursor {
+    width: 8px;
+    height: 8px;
+    background: white;
+}
+
+.cursor-follower {
+    width: 40px;
+    height: 40px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(2px);
+}
+
+.cursor-follower.active {
+    transform: scale(1.5);
+    background: rgba(242, 101, 34, 0.2);
+    border-color: var(--primary);
 }
 
 @media (max-width: 1024px) {

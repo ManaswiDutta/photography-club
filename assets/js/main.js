@@ -1,4 +1,36 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Custom Cursor
+    const cursor = document.createElement('div');
+    cursor.className = 'custom-cursor';
+    cursor.style.pointerEvents = 'none';
+    document.body.appendChild(cursor);
+
+    const follower = document.createElement('div');
+    follower.className = 'cursor-follower';
+    follower.style.pointerEvents = 'none';
+    document.body.appendChild(follower);
+
+    document.addEventListener('mousemove', (e) => {
+        cursor.style.left = e.clientX + 'px';
+        cursor.style.top = e.clientY + 'px';
+
+        setTimeout(() => {
+            follower.style.left = e.clientX + 'px';
+            follower.style.top = e.clientY + 'px';
+        }, 50);
+    });
+
+    document.querySelectorAll('a, button, .glass-card').forEach(el => {
+        el.addEventListener('mouseenter', () => {
+            follower.classList.add('active');
+            cursor.classList.add('active');
+        });
+        el.addEventListener('mouseleave', () => {
+            follower.classList.remove('active');
+            cursor.classList.remove('active');
+        });
+    });
+
     // Background Scroller logic
     let currentSlide = 0;
     const slides = document.querySelectorAll('.bg-slide');

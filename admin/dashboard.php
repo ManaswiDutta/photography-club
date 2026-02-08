@@ -23,6 +23,7 @@ $events = $stmt->fetchAll();
                 <ul>
                     <li><a href="dashboard.php" class="active">Dashboard</a></li>
                     <li><a href="upload_event.php">Upload</a></li>
+                    <li><a href="background_settings.php">BG Settings</a></li>
                     <li><a href="logout.php">Logout</a></li>
                 </ul>
             </nav>
@@ -48,7 +49,10 @@ $events = $stmt->fetchAll();
                 <h2 style="font-size: 3.5rem; line-height: 1;">Control Center</h2>
                 <p style="color: var(--text-muted); margin-top: 1rem;">Managing <?php echo count($events); ?> photographic events.</p>
             </div>
-            <a href="upload_event.php" class="btn btn-primary">+ New Event</a>
+            <div style="display: flex; gap: 1rem;">
+                <a href="background_settings.php" class="btn btn-outline" style="border-color: var(--primary); color: var(--primary);">Change Backgrounds</a>
+                <a href="upload_event.php" class="btn btn-primary">+ New Event</a>
+            </div>
         </div>
 
         <div class="glass-card" style="padding: 2rem; overflow-x: auto;">
