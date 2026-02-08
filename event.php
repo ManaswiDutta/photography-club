@@ -162,8 +162,36 @@ $photos = $photo_stmt->fetchAll();
         <div class="nav-btn next-btn" onclick="nextPhoto()">&rsaquo;</div>
     </div>
 
-    <footer style="padding: 5rem 0; text-align: center; color: var(--text-muted); border-top: 1px solid var(--glass-border); margin-top: 5rem;">
-        <p>&copy; 2026 College Photography Club. Inspired by visionaries.</p>
+    <footer>
+        <div class="container footer-content">
+            <div class="logo">PH<span>.CLUB</span></div>
+            
+            <?php
+            $social_stmt = $pdo->query("SELECT * FROM social_links");
+            $social_links = $social_stmt->fetchAll();
+            
+            if (!empty($social_links)): ?>
+                <div class="social-links">
+                    <?php foreach ($social_links as $link): 
+                        $icon = "fa-link";
+                        switch(strtolower($link['platform'])) {
+                            case 'instagram': $icon = "fa-brands fa-instagram"; break;
+                            case 'facebook': $icon = "fa-brands fa-facebook"; break;
+                            case 'twitter': $icon = "fa-brands fa-twitter"; break;
+                            case 'linkedin': $icon = "fa-brands fa-linkedin"; break;
+                            case 'youtube': $icon = "fa-brands fa-youtube"; break;
+                            case 'github': $icon = "fa-brands fa-github"; break;
+                        }
+                    ?>
+                        <a href="<?php echo htmlspecialchars($link['url']); ?>" target="_blank" class="social-icon">
+                            <i class="<?php echo $icon; ?>"></i>
+                        </a>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+            
+            <p class="copyright">&copy; 2026 College Photography Club.</p>
+        </div>
     </footer>
 
     <script src="assets/js/main.js"></script>
@@ -206,5 +234,6 @@ $photos = $photo_stmt->fetchAll();
             }
         });
     </script>
+    <script src="assets/js/main.js"></script>
 </body>
 </html>

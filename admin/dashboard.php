@@ -17,16 +17,22 @@ $events = $stmt->fetchAll();
 </head>
 <body>
     <header class="glass">
-        <div class="container" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-            <a href="../index.php" class="logo">ADMIN<span>PANEL</span></a>
+        <div class="container header-flex">
+            <a href="dashboard.php" class="logo">ADMIN<span>PANEL</span></a>
             <nav>
                 <ul>
                     <li><a href="dashboard.php" class="active">Dashboard</a></li>
                     <li><a href="upload_event.php">Upload</a></li>
                     <li><a href="background_settings.php">BG Settings</a></li>
+                    <li><a href="social_settings.php">Social</a></li>
                     <li><a href="logout.php">Logout</a></li>
                 </ul>
             </nav>
+            <div class="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
         </div>
     </header>
 
@@ -44,44 +50,44 @@ $events = $stmt->fetchAll();
             </script>
         <?php endif; ?>
 
-        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 4rem;">
+        <div class="admin-page-header">
             <div>
-                <h2 style="font-size: 3.5rem; line-height: 1;">Control Center</h2>
+                <h2>Control Center</h2>
                 <p style="color: var(--text-muted); margin-top: 1rem;">Managing <?php echo count($events); ?> photographic events.</p>
             </div>
-            <div style="display: flex; gap: 1rem;">
+            <div class="admin-actions">
                 <a href="background_settings.php" class="btn btn-outline" style="border-color: var(--primary); color: var(--primary);">Change Backgrounds</a>
                 <a href="upload_event.php" class="btn btn-primary">+ New Event</a>
             </div>
         </div>
 
         <div class="glass-card" style="padding: 2rem; overflow-x: auto;">
-            <table style="width: 100%; border-collapse: collapse; text-align: left; min-width: 600px;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left;">
                 <thead>
-                    <tr style="border-bottom: 1px solid var(--glass-border); color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em;">
-                        <th style="padding: 1.5rem;">Event Identity</th>
-                        <th style="padding: 1.5rem;">Timeline</th>
-                        <th style="padding: 1.5rem;">Assets</th>
-                        <th style="padding: 1.5rem; text-align: right;">Operations</th>
+                    <tr style="border-bottom: 1px solid var(--glass-border); color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em;">
+                        <th style="padding: 1rem 0.5rem;">Event & Stats</th>
+                        <th style="padding: 1rem 0.5rem;">Timeline</th>
+                        <th style="padding: 1rem 0.5rem; text-align: right;">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (empty($events)): ?>
                         <tr>
-                            <td colspan="4" style="padding: 4rem; text-align: center; color: var(--text-muted);">No collections established yet.</td>
+                            <td colspan="3" style="padding: 4rem; text-align: center; color: var(--text-muted);">No collections established yet.</td>
                         </tr>
                     <?php else: ?>
                         <?php foreach ($events as $event): ?>
                             <tr style="border-bottom: 1px solid var(--glass-border); transition: var(--transition);" onmouseover="this.style.background='var(--glass)'" onmouseout="this.style.background='transparent'">
-                                <td style="padding: 1.5rem;">
-                                    <div style="font-weight: 700; color: var(--text-main); font-size: 1.1rem;"><?php echo htmlspecialchars($event['name']); ?></div>
-                                    <div style="font-size: 0.8rem; color: var(--text-muted);"><?php echo htmlspecialchars($event['folder_name']); ?></div>
+                                <td style="padding: 1.2rem 0.5rem;">
+                                    <div style="font-weight: 700; color: var(--text-main); font-size: 1rem; line-height: 1.2;"><?php echo htmlspecialchars($event['name']); ?></div>
+                                    <div style="font-size: 0.75rem; color: var(--primary); margin-top: 0.3rem; font-weight: 600;"><?php echo $event['photo_count']; ?> Assets</div>
                                 </td>
-                                <td style="padding: 1.5rem; font-weight: 500;"><?php echo date('M Y', strtotime($event['event_date'])); ?></td>
-                                <td style="padding: 1.5rem;"><span style="background: var(--glass-bright); padding: 0.3rem 0.8rem; border-radius: 100px; font-size: 0.8rem;"><?php echo $event['photo_count']; ?> Photos</span></td>
-                                <td style="padding: 1.5rem; text-align: right;">
-                                    <a href="edit_event.php?id=<?php echo $event['id']; ?>" class="btn btn-outline" style="padding: 0.5rem 1.2rem; font-size: 0.8rem; margin-right: 0.5rem;">Edit</a>
-                                    <a href="delete_event.php?id=<?php echo $event['id']; ?>" onclick="return confirm('Archive this event?')" class="btn btn-outline" style="padding: 0.5rem 1.2rem; font-size: 0.8rem; color: var(--primary); border-color: rgba(255, 71, 87, 0.2);">Delete</a>
+                                <td style="padding: 1.2rem 0.5rem; font-weight: 500; font-size: 0.85rem; color: var(--text-muted);"><?php echo date('M Y', strtotime($event['event_date'])); ?></td>
+                                <td style="padding: 1.2rem 0.5rem; text-align: right; white-space: nowrap;">
+                                    <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
+                                        <a href="edit_event.php?id=<?php echo $event['id']; ?>" class="btn-icon" title="Edit Event"><i class="fa-solid fa-pen-to-square"></i></a>
+                                        <a href="delete_event.php?id=<?php echo $event['id']; ?>" onclick="return confirm('Archive this event?')" class="btn-icon btn-icon-danger" title="Delete Event"><i class="fa-solid fa-trash-can"></i></a>
+                                    </div>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -90,5 +96,6 @@ $events = $stmt->fetchAll();
             </table>
         </div>
     </main>
+    <script src="../assets/js/main.js"></script>
 </body>
 </html>

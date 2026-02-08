@@ -103,22 +103,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </head>
 <body>
     <header class="glass">
-        <div class="container" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+        <div class="container header-flex">
             <a href="../index.php" class="logo">ADMIN<span>PANEL</span></a>
             <nav>
                 <ul>
                     <li><a href="dashboard.php">Dashboard</a></li>
                     <li><a href="upload_event.php" class="active">Upload</a></li>
+                    <li><a href="background_settings.php">BG Settings</a></li>
+                    <li><a href="social_settings.php">Social</a></li>
                     <li><a href="logout.php">Logout</a></li>
                 </ul>
             </nav>
+            <div class="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
         </div>
     </header>
 
     <main class="container animate-up" style="padding-top: 10rem;">
-        <div class="glass-card" style="max-width: 700px; margin: 0 auto; padding: 4rem;">
+        <div class="glass-card upload-card" style="margin: 0 auto;">
             <div style="margin-bottom: 3rem;">
-                <h2 style="font-size: 2.5rem; margin-bottom: 0.5rem;">Upload Memories</h2>
+                <h2 style="margin-bottom: 0.5rem; font-size: 2.5rem;">Upload Memories</h2>
                 <p style="color: var(--text-muted);">Select a folder to bulk-upload photos to a new event.</p>
             </div>
             
@@ -226,5 +233,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             xhr.send(formData);
         };
     </script>
+    <script src="../assets/js/main.js"></script>
 </body>
 </html>

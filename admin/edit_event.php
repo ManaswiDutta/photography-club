@@ -97,15 +97,22 @@ $photos = $photo_stmt->fetchAll();
 </head>
 <body>
     <header class="glass">
-        <div class="container" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+        <div class="container header-flex">
             <a href="dashboard.php" class="logo">ADMIN<span>PANEL</span></a>
             <nav>
                 <ul>
                     <li><a href="dashboard.php">Dashboard</a></li>
                     <li><a href="upload_event.php">Upload</a></li>
+                    <li><a href="background_settings.php">BG Settings</a></li>
+                    <li><a href="social_settings.php">Social</a></li>
                     <li><a href="logout.php">Logout</a></li>
                 </ul>
             </nav>
+            <div class="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
         </div>
     </header>
 
@@ -173,5 +180,6 @@ $photos = $photo_stmt->fetchAll();
             document.getElementById('cover_image_input').value = path;
         }
     </script>
+    <script src="../assets/js/main.js"></script>
 </body>
 </html>

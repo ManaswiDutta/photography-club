@@ -109,24 +109,34 @@ try {
     </style>
 </head>
 <body>
-    <header>
-        <div class="container" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+    <header class="glass">
+        <div class="container header-flex">
             <a href="dashboard.php" class="logo">PH<span>.ADMIN</span></a>
             <nav>
                 <ul>
                     <li><a href="dashboard.php">Dashboard</a></li>
                     <li><a href="upload_event.php">Upload</a></li>
                     <li><a href="background_settings.php" class="active">BG Settings</a></li>
+                    <li><a href="social_settings.php">Social</a></li>
                     <li><a href="logout.php">Logout</a></li>
                 </ul>
             </nav>
+            <div class="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
         </div>
     </header>
 
     <main class="admin-container">
-        <div class="glass-card" style="padding: 3rem;">
-            <h1 style="margin-bottom: 1rem;">Background Customization</h1>
-            <p style="color: var(--text-muted); margin-bottom: 2rem;">Select photos from your events to be featured in the homepage background scroller.</p>
+        <div class="admin-page-header">
+            <div>
+                <h1>Backgrounds</h1>
+                <p style="color: var(--text-muted); margin-bottom: 2rem;">Featured in the homepage background scroller.</p>
+            </div>
+        </div>
+        <div class="glass-card">
 
             <?php if ($message): ?>
                 <div class="toast-success"><?php echo $message; ?></div>
@@ -187,5 +197,6 @@ try {
             if (toast) toast.style.display = 'none';
         }, 3000);
     </script>
+    <script src="../assets/js/main.js"></script>
 </body>
 </html>

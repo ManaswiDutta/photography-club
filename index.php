@@ -129,20 +129,43 @@
             </div>
             
             <div style="text-align: center; margin-top: 10rem;" class="reveal">
-                <a href="gallery.php" style="font-size: 5rem; font-family: 'Outfit'; font-weight: 900; opacity: 0.3; transition: opacity 0.4s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.3">
+                <a href="gallery.php" style="font-size: 5rem; font-family: 'Outfit'; font-weight: 900; opacity: 0.9; transition: opacity 0.4s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.3">
                     ALL EVENTS &rarr;
                 </a>
             </div>
         </section>
     </main>
 
-    <footer style="padding: 10rem 0 5rem; border-top: 1px solid var(--glass-border);">
-        <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
-            <div class="logo">PH<span>.CLUB</span></div>
-            <p style="color: var(--text-muted); font-size: 0.9rem;">&copy; 2026 Collective Excellence.</p>
-            <div style="display: flex; gap: 2rem;">
-                <a href="admin/login.php" style="color: var(--text-muted); text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.1em;">Member Access</a>
-            </div>
+    <footer>
+        <div class="container footer-content">
+            <div class="logo"><span>PHOTOGRAPHy </span>CLUB</div>
+            
+            <?php
+            // Fetch Social Links
+            $social_stmt = $pdo->query("SELECT * FROM social_links");
+            $social_links = $social_stmt->fetchAll();
+            
+            if (!empty($social_links)): ?>
+                <div class="social-links">
+                    <?php foreach ($social_links as $link): 
+                        $icon = "fa-link";
+                        switch(strtolower($link['platform'])) {
+                            case 'instagram': $icon = "fa-brands fa-instagram"; break;
+                            case 'facebook': $icon = "fa-brands fa-facebook"; break;
+                            case 'twitter': $icon = "fa-brands fa-twitter"; break;
+                            case 'linkedin': $icon = "fa-brands fa-linkedin"; break;
+                            case 'youtube': $icon = "fa-brands fa-youtube"; break;
+                            case 'github': $icon = "fa-brands fa-github"; break;
+                        }
+                    ?>
+                        <a href="<?php echo htmlspecialchars($link['url']); ?>" target="_blank" class="social-icon" title="<?php echo htmlspecialchars($link['platform']); ?>">
+                            <i class="<?php echo $icon; ?>"></i>
+                        </a>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+            
+            <p class="copyright">&copy;2026 Vidyamandira Photography Club</p>
         </div>
     </footer>
 
