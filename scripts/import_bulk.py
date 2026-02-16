@@ -11,16 +11,19 @@ from concurrent.futures import ThreadPoolExecutor
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 UPLOADS_DIR = os.path.abspath(os.path.join(BASE_DIR, "../uploads"))
 INGEST_SCRIPT = os.path.join(BASE_DIR, "import_db.php")
+TEMP_DIR = os.path.join(BASE_DIR, "../temp")
 
-# Try to find the local PHP executable for more reliable ingestion
+if not os.path.exists(TEMP_DIR):
+    os.makedirs(TEMP_DIR)
+
+# Local PHP binary path
 LOCAL_PHP = "php"
 if os.path.exists("C:\\xampp_feb26\\php\\php.exe"):
     LOCAL_PHP = "C:\\xampp_feb26\\php\\php.exe"
 
 def sanitize_filename(name):
-    # Remove emojis and special chars that might break Windows paths
     name = re.sub(r'[^\w\s\-\(\)]', '_', name)
-    return name.replace(" ", "_")[:120] # Limit length
+    return name.replace(" ", "_")[:120]
 
 def resolve_short_link(url):
     try:
@@ -32,38 +35,58 @@ def resolve_short_link(url):
 
 def get_album_metadata(url):
     try:
-        response = requests.get(url, timeout=15)
+        resolved_url = resolve_short_link(url)
+        print(f"Full URL: {resolved_url}")
+        
+        # Extract Album ID and Key
+        album_id_match = re.search(r'share/(.*?)\?', resolved_url)
+        key_match = re.search(r'key=(.*)', resolved_url)
+        
+        album_id = album_id_match.group(1) if album_id_match else ""
+        album_key = key_match.group(1) if key_match else ""
+        
+        response = requests.get(resolved_url, timeout=15)
         content = response.text
         
-        # Try to find album title
+        # Album Title
         title_match = re.search(r'<title>(.*?)</title>', content)
         album_title = title_match.group(1).replace(" - Google Photos", "").strip() if title_match else "Google_Photos_Album"
         
-        # Extract image URLs using a more precise pattern for high-res images
-        # Google Photos uses AF_initDataCallback for images
-        pattern = r'\"(https://lh3\.googleusercontent\.com/pw/[^\"\s]+)\"'
-        urls = list(set(re.findall(pattern, content)))
+        # Extract ordered unique IDs (AF1Qip...)
+        ordered_ids = [m.group(1) for m in re.finditer(r'\"(AF1Qip[^\"\s]{30,})\"', content) if m.group(1) != album_id]
+        unique_ids = []
+        [unique_ids.append(x) for x in ordered_ids if x not in unique_ids]
         
-        # Filter for base URLs (usually longer, without = params)
-        clean_urls = [u for u in urls if "=w" not in u and "=h" not in u]
+        # Extract ordered unique Image URLs (lh3...)
+        ordered_imgs = [m.group(1) for m in re.finditer(r'\"(https://lh3\.googleusercontent\.com/pw/[^\"\s]+)\"', content) if "=w" not in m.group(1)]
+        unique_imgs = []
+        [unique_imgs.append(x) for x in ordered_imgs if x not in unique_imgs]
         
-        # Sort or filter if needed? Usually they are unsorted in the page
+        print(f"Found {len(unique_ids)} photo IDs and {len(unique_imgs)} image sources.")
+        
+        # If lengths match, we can pair them. Otherwise, we'll just use images.
+        # Usually they match perfectly if the page loads correctly.
+        paired_data = []
+        for pid, pimg in zip(unique_ids, unique_imgs):
+            share_link = f"https://photos.google.com/share/{album_id}/photo/{pid}?key={album_key}"
+            paired_data.append({
+                'id': pid,
+                'img_src': pimg,
+                'share_link': share_link
+            })
+            
         return {
             'title': album_title,
-            'urls': clean_urls
+            'photos': paired_data
         }
     except Exception as e:
         print(f"Error fetching metadata: {e}")
         return None
 
 def download_image(args):
-    img_url, i, target_dir = args
+    img_url, save_path = args
     try:
-        # w0 often grabs the original. w2400 is a good safe high-res fallback.
-        dl_url = img_url + "=w2400" 
-        filename = f"photo_{i+1:03d}.jpg"
-        save_path = os.path.join(target_dir, filename)
-        
+        dl_url = img_url + "=w2400"
         r = requests.get(dl_url, stream=True, timeout=20)
         if r.status_code == 200:
             with open(save_path, 'wb') as f:
@@ -71,73 +94,62 @@ def download_image(args):
                     f.write(chunk)
             return True
     except Exception as e:
-        print(f"   Failed image {i+1}: {e}")
+        print(f"Failed to download image: {e}")
     return False
 
-def download_album(url):
-    if not url.startswith("http"):
-        return
-
-    print(f"\n--- Initializing Import for: {url} ---")
-    
-    resolved_url = resolve_short_link(url)
-    metadata = get_album_metadata(resolved_url)
-    
-    if not metadata or not metadata['urls']:
-        print("Error: Could not extract photo data. Is the album link public?")
+def process_album(url):
+    metadata = get_album_metadata(url)
+    if not metadata or not metadata['photos']:
+        print("Error: Could not retrieve album data.")
         return
 
     album_title = metadata['title']
-    image_urls = metadata['urls']
-    print(f"Album Found: {album_title}")
-    print(f"Total Photos: {len(image_urls)}")
-
-    folder_name = sanitize_filename(album_title)
-    # Unique timestamped folder
-    folder_name += "_" + datetime.now().strftime("%H%M%S")
+    photos = metadata['photos']
     
+    print(f"Album Found: {album_title}")
+    
+    folder_name = sanitize_filename(album_title) + "_" + datetime.now().strftime("%H%M%S")
     target_dir = os.path.join(UPLOADS_DIR, folder_name)
     if not os.path.exists(target_dir):
         os.makedirs(target_dir)
 
-    print(f"Starting multi-threaded download to: {folder_name}")
+    # In "CDN Mode", we only download the FIRST image locally as a thumbnail
+    print("Downloading local cover image...")
+    cover_photo = photos[0]
+    cover_filename = "cover.jpg"
+    cover_path = os.path.join(target_dir, cover_filename)
+    if download_image((cover_photo['img_src'], cover_path)):
+        print(f"Cover image saved to: {folder_name}/cover.jpg")
     
-    # Use ThreadPoolExecutor for parallel downloads
-    # 8 threads is usually a good balance for I/O
-    tasks = [(url, i, target_dir) for i, url in enumerate(image_urls)]
-    downloaded_count = 0
+    # Save the mapping to a JSON file for PHP to ingest
+    link_file = os.path.join(TEMP_DIR, f"links_{folder_name}.json")
+    with open(link_file, "w", encoding="utf-8") as f:
+        json.dump(photos, f)
     
-    with ThreadPoolExecutor(max_workers=8) as executor:
-        results = list(executor.map(download_image, tasks))
-        downloaded_count = sum(1 for r in results if r)
+    print(f"Metadata saved to: {os.path.basename(link_file)}")
+    
+    # Trigger PHP ingestion in CDN mode
+    trigger_ingestion(folder_name, album_title, link_file)
 
-    if downloaded_count > 0:
-        print(f"\n--- Success! ---")
-        print(f"Downloaded {downloaded_count} photos.")
-        trigger_ingestion(folder_name, album_title)
-    else:
-        print("\n--- Failure ---")
-        print("No photos were downloaded.")
-
-def trigger_ingestion(folder_name, display_name):
-    print(f"Syncing with database...")
+def trigger_ingestion(folder_name, display_name, link_file):
+    print("Starting database ingestion (CDN Mode)...")
     try:
-        cmd_php = [LOCAL_PHP, INGEST_SCRIPT, folder_name, display_name]
+        cmd_php = [LOCAL_PHP, INGEST_SCRIPT, folder_name, display_name, "--cdn", link_file]
         result = subprocess.run(cmd_php, capture_output=True, text=True, check=True)
         print(result.stdout)
         print("Database sync complete.")
+        
+        # Cleanup temp file
+        # os.remove(link_file)
     except Exception as e:
         print(f"Ingestion failed: {e}")
 
 def main():
     if len(sys.argv) > 1:
         url = sys.argv[1]
-        if url.startswith("http"):
-            download_album(url)
-        else:
-            print("Invalid URL format.")
+        process_album(url)
     else:
-        print("Usage: python import_bulk.py [google_shared_album_url]")
+        print("Usage: python import_bulk.py [google_photos_url]")
 
 if __name__ == "__main__":
     main()

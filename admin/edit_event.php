@@ -55,6 +55,7 @@ $photos = $photo_stmt->fetchAll();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Event | Photo Club</title>
+    <meta name="referrer" content="no-referrer">
     <link rel="stylesheet" href="../assets/css/style.css?v=2.1">
     <style>
         .thumbnail-option {
@@ -137,7 +138,8 @@ $photos = $photo_stmt->fetchAll();
                         <?php foreach ($photos as $photo): ?>
                             <div class="thumbnail-option <?php echo ($event['cover_image'] == $photo['file_path']) ? 'active' : ''; ?>" 
                                  onclick="selectThumbnail(this, '<?php echo addslashes($photo['file_path']); ?>')">
-                                <img src="../<?php echo htmlspecialchars($photo['file_path']); ?>" alt="Option">
+                                <?php $src = (strpos($photo['file_path'], 'http') === 0) ? $photo['file_path'] : '../' . $photo['file_path']; ?>
+                                <img src="<?php echo htmlspecialchars($src); ?>" alt="Option">
                                 <div class="check-mark">✓</div>
                             </div>
                         <?php endforeach; ?>

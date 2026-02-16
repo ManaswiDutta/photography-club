@@ -26,6 +26,7 @@ $photos = $photo_stmt->fetchAll();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($event['name']); ?> | Photo Club</title>
+    <meta name="referrer" content="no-referrer">
     <link rel="stylesheet" href="assets/css/style.css?v=2.1">
     <style>
         .photo-gallery {
@@ -142,7 +143,14 @@ $photos = $photo_stmt->fetchAll();
     <div id="lightbox">
         <span class="close-btn" onclick="closeLightbox()">&times;</span>
         <div class="nav-btn prev-btn" onclick="prevPhoto()">&lsaquo;</div>
-        <img id="lightbox-img" src="" alt="Zoomed Photo">
+        
+        <div style="position: relative; text-align: center;">
+            <img id="lightbox-img" src="" alt="Zoomed Photo">
+            <a id="external-link" href="" target="_blank" class="btn btn-outline" style="position: absolute; bottom: -4rem; left: 50%; transform: translateX(-50%); display: none; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); color: white; border-color: rgba(255,255,255,0.2); white-space: nowrap;">
+                <i class="fab fa-google-drive" style="margin-right: 0.5rem;"></i> View on Google Photos
+            </a>
+        </div>
+
         <div class="nav-btn next-btn" onclick="nextPhoto()">&rsaquo;</div>
     </div>
 
@@ -150,7 +158,7 @@ $photos = $photo_stmt->fetchAll();
 
     <script src="assets/js/main.js"></script>
     <script>
-        const photos = <?php echo json_encode(array_column($photos, 'file_path')); ?>;
+        const photos = <?php echo json_encode($photos); ?>;
         let currentIndex = 0;
 
         function openLightbox(index) {
@@ -166,7 +174,18 @@ $photos = $photo_stmt->fetchAll();
         }
 
         function updateLightbox() {
-            document.getElementById('lightbox-img').src = photos[currentIndex];
+            const photo = photos[currentIndex];
+            const img = document.getElementById('lightbox-img');
+            const link = document.getElementById('external-link');
+            
+            img.src = photo.file_path;
+            
+            if (photo.external_link) {
+                link.href = photo.external_link;
+                link.style.display = 'block';
+            } else {
+                link.style.display = 'none';
+            }
         }
 
         function nextPhoto() {
@@ -188,6 +207,5 @@ $photos = $photo_stmt->fetchAll();
             }
         });
     </script>
-    <script src="assets/js/main.js"></script>
 </body>
 </html>

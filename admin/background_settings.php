@@ -68,6 +68,7 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Background Settings - PH. Admin</title>
+    <meta name="referrer" content="no-referrer">
     <link rel="stylesheet" href="../assets/css/style.css">
     <style>
         .admin-container { padding-top: 120px; max-width: 1200px; margin: 0 auto; }
@@ -132,7 +133,8 @@ try {
                     <?php else: ?>
                         <?php foreach ($current_bgs as $bg): ?>
                             <div class="bg-wrapper">
-                                <img src="../<?php echo htmlspecialchars($bg['file_path']); ?>" alt="Background">
+                                <?php $src = (strpos($bg['file_path'], 'http') === 0) ? $bg['file_path'] : '../' . $bg['file_path']; ?>
+                                <img src="<?php echo htmlspecialchars($src); ?>" alt="Background">
                                 <form action="" method="POST">
                                     <input type="hidden" name="photo_id" value="<?php echo $bg['photo_id']; ?>">
                                     <input type="hidden" name="toggle_bg" value="1">
@@ -163,7 +165,8 @@ try {
                         <input type="hidden" name="photo_id" value="<?php echo $photo['id']; ?>">
                         <input type="hidden" name="toggle_bg" value="1">
                         <div class="bg-item <?php echo $photo['is_bg'] ? 'active' : ''; ?>" onclick="this.parentNode.submit()">
-                            <img src="../<?php echo htmlspecialchars($photo['file_path']); ?>" alt="Photo">
+                            <?php $src = (strpos($photo['file_path'], 'http') === 0) ? $photo['file_path'] : '../' . $photo['file_path']; ?>
+                            <img src="<?php echo htmlspecialchars($src); ?>" alt="Photo">
                             <div class="badge">ACTIVE</div>
                         </div>
                     </form>

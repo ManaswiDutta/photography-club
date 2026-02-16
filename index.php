@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PH - College Photography Club</title>
+    <meta name="referrer" content="no-referrer">
     <link rel="stylesheet" href="assets/css/style.css?v=2.1">
 </head>
 <body>
@@ -117,8 +118,19 @@
                     ALL EVENTS &rarr;
                 </a>
             </div>
+            </div>
         </section>
     </main>
+
+    <script>
+        // Parallax Scroll Logic
+        window.addEventListener('scroll', () => {
+            const scroller = document.querySelector('.bg-scroller');
+            if (scroller) {
+                scroller.style.setProperty('--scroll-y', window.scrollY);
+            }
+        });
+    </script>
 
 <?php include 'includes/footer.php'; ?>
 
