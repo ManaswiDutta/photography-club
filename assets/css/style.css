@@ -438,6 +438,165 @@ section {
     transition: var(--transition);
 }
 
+/* ===== Login Page (professional auth layout) ===== */
+.login-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: var(--bg-dark);
+    background-image:
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(242, 101, 34, 0.15), transparent),
+        radial-gradient(ellipse 60% 40% at 100% 100%, rgba(242, 101, 34, 0.08), transparent);
+}
+
+.login-card {
+    width: 100%;
+    max-width: 420px;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 2.5rem 2.25rem;
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+    transition: var(--transition);
+}
+
+.login-card:hover {
+    border-color: rgba(242, 101, 34, 0.25);
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+}
+
+.login-page .login-logo {
+    display: block;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.75rem;
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    text-transform: uppercase;
+    color: var(--text-main);
+    text-decoration: none;
+    margin-bottom: 0.25rem;
+}
+
+.login-page .login-logo span {
+    color: var(--primary);
+}
+
+.login-page .login-subtitle {
+    color: var(--text-muted);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    margin-bottom: 2rem;
+}
+
+.login-page .login-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text-main);
+    margin-bottom: 1.75rem;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.login-form .field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.login-form label {
+    display: block;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.02em;
+}
+
+.login-form input[type="text"],
+.login-form input[type="password"] {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    font-size: 1rem;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    color: var(--text-main);
+    transition: var(--transition);
+}
+
+.login-form input:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: rgba(255, 255, 255, 0.06);
+    box-shadow: 0 0 0 3px var(--primary-dim);
+}
+
+.login-form .btn-submit {
+    width: 100%;
+    padding: 0.875rem 1.25rem;
+    margin-top: 0.5rem;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    border-radius: 10px;
+    border: none;
+    background: var(--primary);
+    color: white;
+    cursor: pointer;
+    transition: var(--transition);
+    font-family: inherit;
+}
+
+.login-form .btn-submit:hover {
+    background: var(--primary-light);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(242, 101, 34, 0.35);
+}
+
+.login-form .btn-submit:active {
+    transform: translateY(0);
+}
+
+.login-page .login-error {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #fef2f2;
+    background: rgba(220, 38, 38, 0.2);
+    border: 1px solid rgba(220, 38, 38, 0.4);
+    border-radius: 10px;
+    margin-bottom: 0.5rem;
+}
+
+.login-page .login-footer {
+    margin-top: 1.75rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--glass-border);
+    text-align: center;
+}
+
+.login-page .login-footer a {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.login-page .login-footer a:hover {
+    color: var(--primary);
+}
+
 .animate-up {
     animation: animateUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
@@ -706,51 +865,55 @@ section {
         padding-right: 0.5rem;
     }
 
-    /* Social Link Alignment & Mobile Fix */
-    .social-link-node {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1.2rem !important;
-        background: rgba(255, 255, 255, 0.02);
-        border: 1px solid var(--glass-border);
-        border-radius: 16px;
-        gap: 1rem;
-        margin-bottom: 1rem;
-    }
+}
 
-    .social-link-node .platform-info {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        min-width: 0;
-        flex: 1;
-    }
+/* Social Link Alignment & Global Fix */
+.social-link-node {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem !important;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
 
-    .social-link-node .platform-info div {
-        min-width: 0;
-    }
+.social-link-node .platform-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    min-width: 0;
+    flex: 1;
+}
 
-    .social-link-node .url-text {
-        font-size: 0.75rem;
-        opacity: 0.6;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 100%;
-    }
+.social-link-node .platform-info div {
+    min-width: 0;
+}
 
-    .social-link-node .delete-link {
-        color: var(--text-muted);
-        transition: var(--transition);
-        width: 32px;
-        height: 32px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-        font-size: 1.2rem;
-    }
+.social-link-node .url-text {
+    font-size: 0.75rem;
+    opacity: 0.6;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+.social-link-node .delete-link {
+    color: var(--text-muted);
+    transition: var(--transition);
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 1.2rem;
+}
+
+@media (max-width: 480px) {
 
     /* Admin Page Header */
     .admin-page-header {

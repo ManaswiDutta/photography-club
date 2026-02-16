@@ -5,8 +5,8 @@ session_start();
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+    $username = trim($_POST['username'] ?? '');
+    $password = $_POST['password'] ?? '';
 
     $stmt = $pdo->prepare("SELECT * FROM admins WHERE username = ?");
     $stmt->execute([$username]);
@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         header("Location: dashboard.php");
         exit();
     } else {
-        $error = "Invalid credentials";
+        $error = "Invalid username or password. Please try again.";
     }
 }
 ?>
@@ -27,31 +27,34 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login | Photo Club</title>
-    <link rel="stylesheet" href="../assets/css/style.css?v=2.1">
+    <title>Log in | Photo Club Admin</title>
+    <link rel="stylesheet" href="../assets/css/style.css?v=2.2">
 </head>
-<body style="display: flex; align-items: center; justify-content: center; height: 100vh;">
-    <div class="glass-card" style="width: 100%; max-width: 450px; padding: 4rem; text-align: center;">
-        <div style="margin-bottom: 3rem;">
-            <a href="../index.php" class="logo" style="display: block; margin-bottom: 0.5rem;">PHOTO<span>CLUB</span></a>
-            <p style="color: var(--text-muted); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.1em;">Management Portal</p>
-        </div>
-        
+<body class="login-page">
+    <div class="login-card">
+        <a href="../index.php" class="login-logo">PHOTO<span>CLUB</span></a>
+        <p class="login-subtitle">Admin portal</p>
+        <h1 class="login-title">Log in</h1>
+
         <?php if ($error): ?>
-            <p style="color: var(--primary); margin-bottom: 2rem; font-weight: 600;"><?php echo $error; ?></p>
+            <p class="login-error" role="alert"><?php echo htmlspecialchars($error); ?></p>
         <?php endif; ?>
 
-        <form method="POST" style="display: flex; flex-direction: column; gap: 1.5rem;">
-            <div style="text-align: left;">
-                <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase;">Username</label>
-                <input type="text" name="username" required>
+        <form method="POST" class="login-form" autocomplete="on">
+            <div class="field-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required autocomplete="username" placeholder="Enter your username" value="<?php echo isset($_POST['username']) ? htmlspecialchars($_POST['username']) : ''; ?>">
             </div>
-            <div style="text-align: left;">
-                <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase;">Password</label>
-                <input type="password" name="password" required>
+            <div class="field-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required autocomplete="current-password" placeholder="Enter your password">
             </div>
-            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1.5rem;">Authenticate</button>
+            <button type="submit" class="btn-submit">Log in</button>
         </form>
+
+        <div class="login-footer">
+            <a href="../index.php">← Back to site</a>
+        </div>
     </div>
 </body>
 </html>
