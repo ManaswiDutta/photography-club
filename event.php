@@ -128,7 +128,13 @@ $photos = $photo_stmt->fetchAll();
             <a href="gallery.php" style="color: var(--primary); font-weight: 600; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.1em; display: inline-block; margin-bottom: 1.5rem;">&larr; Back to Gallery</a>
             <h1 style="font-size: 4.5rem; margin-bottom: 1rem; line-height: 1;"><?php echo htmlspecialchars($event['name']); ?></h1>
             <p style="color: var(--primary); font-weight: 700; font-size: 1.1rem; margin-bottom: 1.5rem;"><?php echo date('F Y', strtotime($event['event_date'])); ?></p>
-            <p style="color: var(--text-muted); font-size: 1.1rem; font-weight: 300;"><?php echo htmlspecialchars($event['description']); ?></p>
+            
+            <div style="display: flex; gap: 1rem; margin-bottom: 2.5rem; flex-wrap: wrap;">
+                <p style="color: var(--text-muted); font-size: 1.1rem; font-weight: 300; flex: 1; min-width: 300px;"><?php echo htmlspecialchars($event['description']); ?></p>
+                <button onclick="shareEvent()" class="btn" style="background: var(--primary); color: white; border-radius: 30px; padding: 0.8rem 1.8rem; font-size: 0.9rem; align-self: flex-start; border: none; box-shadow: 0 10px 20px var(--primary-dim);">
+                    <i class="fa-solid fa-share-nodes" style="margin-right: 0.5rem;"></i> Share Event
+                </button>
+            </div>
         </div>
 
         <div class="photo-gallery">
@@ -146,9 +152,14 @@ $photos = $photo_stmt->fetchAll();
         
         <div style="position: relative; text-align: center;">
             <img id="lightbox-img" src="" alt="Zoomed Photo">
-            <a id="external-link" href="" target="_blank" class="btn btn-outline" style="position: absolute; bottom: -4rem; left: 50%; transform: translateX(-50%); display: none; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); color: white; border-color: rgba(255,255,255,0.2); white-space: nowrap;">
-                <i class="fab fa-google-drive" style="margin-right: 0.5rem;"></i> View on Google Photos
-            </a>
+            <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1.5rem;">
+                <a id="external-link" href="" target="_blank" class="btn btn-outline" style="background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); color: white; border-color: rgba(255,255,255,0.2); white-space: nowrap; border-radius: 30px; display: none;">
+                    <i class="fab fa-google-drive" style="margin-right: 0.5rem;"></i> Google Photos
+                </a>
+                <button onclick="downloadCurrentPhoto()" class="btn btn-primary" style="background: var(--primary); color: white; border: none; white-space: nowrap; border-radius: 30px; padding: 0.8rem 2rem;">
+                    <i class="fa-solid fa-download" style="margin-right: 0.5rem;"></i> Download
+                </button>
+            </div>
         </div>
 
         <div class="nav-btn next-btn" onclick="nextPhoto()">&rsaquo;</div>
@@ -196,6 +207,30 @@ $photos = $photo_stmt->fetchAll();
         function prevPhoto() {
             currentIndex = (currentIndex - 1 + photos.length) % photos.length;
             updateLightbox();
+        }
+
+        // Social Sharing Logic
+        function shareEvent() {
+            const shareData = {
+                title: '<?php echo addslashes($event['name']); ?> | Photo Club',
+                text: 'Check out these photos from <?php echo addslashes($event['name']); ?>!',
+                url: window.location.href
+            };
+
+            if (navigator.share) {
+                navigator.share(shareData).catch(console.error);
+            } else {
+                navigator.clipboard.writeText(window.location.href).then(() => {
+                    alert('Event link copied to clipboard!');
+                });
+            }
+        }
+
+        // Proxy Download Logic
+        function downloadCurrentPhoto() {
+            const photo = photos[currentIndex];
+            const downloadUrl = `proxy_download.php?url=${encodeURIComponent(photo.file_path)}`;
+            window.location.href = downloadUrl;
         }
 
         // Keyboard support
